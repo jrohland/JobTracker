@@ -83,9 +83,16 @@ static JTState *shared;
         NSMutableArray *jobList = [[NSMutableArray alloc] init];
         for (NSXMLElement *jobRow in jobRows) {
             NSArray *jobCells = [jobRow nodesForXPath:@"./td" error:nil];
-            NSArray *attribs = [NSArray arrayWithObjects:@"job_id", @"priority", @"user", @"name", @"map_pct_complete",
-                                @"map_total", @"maps_completed", @"reduce_pct_complete", @"reduce_total", @"reduces_complete",
-                                @"job_scheduling_info", @"diagnostic_info", nil];
+            NSArray *attribs = nil;
+            if ([jobCells count] == 12) {
+                attribs = [NSArray arrayWithObjects:@"job_id", @"priority", @"user", @"name", @"map_pct_complete",
+                            @"map_total", @"maps_completed", @"reduce_pct_complete", @"reduce_total", @"reduces_complete",
+                            @"job_scheduling_info", @"diagnostic_info", nil];
+            } else {
+                attribs = [NSArray arrayWithObjects:@"admin", @"job_id", @"priority", @"user", @"name", @"map_pct_complete",
+                            @"map_total", @"maps_completed", @"reduce_pct_complete", @"reduce_total", @"reduces_complete",
+                            @"job_scheduling_info", @"diagnostic_info", nil];
+            }
             NSMutableDictionary *jobData = [[NSMutableDictionary alloc] init];
             [attribs enumerateObjectsUsingBlock:^(id attrib, NSUInteger idx, BOOL *stop) {
                 NSString *value = [[[jobCells objectAtIndex:idx] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
